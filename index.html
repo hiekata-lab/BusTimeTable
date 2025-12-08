@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>バス時刻表</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div id="language-switch">
+    <button id="language-toggle-button">Switch<br>Language</button>
+  </div>
+  <div class="header">
+    <div class="bus-info">
+      <div class="header-text">
+        <img src="logo_todai.png" alt="バスアイコン" class="bus-icon">
+        <span class="translatable-text">東大シャトルバス</span>
+      </div>
+      <div class="destination translatable-text">【環境棟前→柏の葉キャンパス駅西口】</div>
+      <div class="destination Shuttle-extra-text translatable-text">自：自動運転</div>
+      <div class="times" id="todai-next-departures">
+        <span>--:--</span>
+        <span>--:--</span>
+        <span>--:--</span>
+        <span>--:--</span>
+      </div>
+    </div>
+    <div class="time-box" id="current-time-box">
+      <div class="current-time translatable-text">現在時刻</div>
+      <div class="time" id="current-time">--:--</div>
+    </div>
+  </div>
+  <hr style=color:white>
+  <div class="header-text tobu-header">
+    <img src="logo_tobu.jpg" alt="東武バスロゴ" class="tobu-logo">
+    <div class="bus-company translatable-text">東武バス</div>
+  </div>
+  <div class="bus-info">
+    <div style="display: flex;">
+      <div class="destination translatable-text">【東大西→柏の葉キャンパス駅西口】</div>
+      <div class="univ-side translatable-text">大学側</div>
+    </div>
+    <div class="destination extra-text translatable-text">　公：公園側から発車可能性あり</div>
+    <div class="times" id="tobu-kashiwanoha-next-departures">
+      <span>--:--</span>
+      <span>--:--</span>
+      <span>--:--</span>
+      <span>--:--</span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="bus-info">
+      <div style="display: flex;">
+        <div class="destination translatable-text">【東大西→柏駅西口】 </div>
+        <div class="park-side translatable-text">公園側</div>
+      </div>
+      <div class="times" id="tobu-kashiwa-next-departures">
+        <span>--:--</span>
+        <span>--:--</span>
+      </div>
+    </div>
+    <div class="bus-info">
+      <div style="display: flex;">
+        <div class="destination translatable-text">【東大西→江戸川台駅東口】 </div>
+        <div class="park-side translatable-text">公園側</div>
+      </div>
+      <div class="destination extra-text translatable-text">門：東大西門前経由</div>
+      <div class="times" id="tobu-edogawadai-next-departures">
+        <span>--:--</span>
+        <span>--:--</span>
+      </div>
+    </div>
+  </div>
+  <div id="bottom-ticker"></div>
+  <script src="script.js"></script>
+</body>
+</html>

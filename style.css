@@ -1,0 +1,375 @@
+/* 基本設定 */
+body {
+  font-family: sans-serif; /* フォントファミリー */
+  margin: 0; /* body のマージンをリセット */
+  padding: 0vh; /* body のパディング（垂直方向のビューポート単位） */
+  color: white; /* テキストの色を白に */
+  background-color: #00325A; /* 背景色を濃い青に */
+  line-height: 0.8vh; /* 行の高さを調整（垂直方向のビューポート単位） */
+}
+
+/* ヘッダー部分 */
+.header {
+  justify-content: space-between; /* 要素を左右に配置し、間隔を最大化 */
+  align-items: flex-start; /* 要素を上端で揃える */
+  margin-bottom: 1vh; /* 下マージン（垂直方向のビューポート単位） */
+  position: relative; /* 親要素を相対配置に設定 */
+}
+
+/* バス情報全体 */
+.bus-info {
+  border-radius: 0.5vh; /* 角の丸み（垂直方向のビューポート単位） */
+  padding: 1.5vh; /* 内側の余白（垂直方向のビューポート単位） */
+  margin-bottom: 2.0vh; /* 下マージン（垂直方向のビューポート単位） */
+}
+
+/* コンテナ（複数のバス情報をまとめる） */
+.container {
+  display: flex; /* フレックスボックスレイアウト */
+  align-items: flex-start; /* 要素を上端で揃える */
+  gap: 2.0vh; /* 要素間のギャップ（垂直方向のビューポート単位） */
+}
+
+/* 現在時刻表示ボックス */
+.time-box {
+  z-index: 10; /* 重ねる順序を調整（東大シャトルバスのボックスよりも大きい値） */
+  position: fixed; /* 固定配置に設定 */
+  top: 5px; /* 上からの位置を調整 */
+  right: 10px; /* 右からの位置を調整 */
+  text-align: left; /* テキストを左寄せ */
+  background-color: #4c4c4c; /* 背景色を灰色に */
+  color: white; /* テキストの色を白に */
+  padding: 3vh 2vh; /* 内側の余白（垂直・水平方向のビューポート単位） */
+  border-radius: 0.5vh; /* 角の丸み（垂直方向のビューポート単位） */
+  margin: 1.0vh 0 0 0; /* 上マージン（垂直方向のビューポート単位） */
+}
+
+
+/* バスアイコン */
+.bus-icon {
+  width: 5.5vh; /* 幅（垂直方向のビューポート単位） */
+  height: 5.5vh; /* 高さ（垂直方向のビューポート単位） */
+  margin-right: 1.5vh; /* 右マージン（垂直方向のビューポート単位） */
+  margin-bottom: 1.5vh; /* 下マージン（垂直方向のビューポート単位） */
+  margin-left: 10px;
+}
+
+/* ヘッダーテキスト（バス名など） */
+.header-text {
+  font-size: 6.0vh; /* フォントサイズ（垂直方向のビューポート単位） */
+  color: #FABE00; /* 文字色を黄色に */
+  font-weight: bold; /* 太字 */
+  margin-bottom: 1vh; /* 下マージン（垂直方向のビューポート単位） */
+  display: flex; /* フレックスボックスレイアウト */
+  align-items: center; /* 要素を垂直方向に中央揃え */
+}
+
+
+
+
+/* 現在時刻のテキスト */
+.current-time {
+  font-size: 3.0vh; /* フォントサイズ（垂直方向のビューポート単位） */
+  margin-bottom: 5vh; /* 下マージン（垂直方向のビューポート単位） */
+}
+
+/* 時刻の数字 */
+.time {
+  font-size: 6vh; /* フォントサイズ（垂直方向のビューポート単位） */
+  font-weight: bold; /* 太字 */
+}
+
+/* 行き先表示 */
+.destination {
+  font-size: 3vh; /* フォントサイズ（垂直方向のビューポート単位） */
+  font-weight: bold; /* 太字 */
+  margin-top:1.5vh; /* 上マージン（垂直方向のビューポート単位） */
+  margin-bottom: 0.5vh; /* 下マージン（垂直方向のビューポート単位） */
+  white-space: pre-line; /* 改行を有効にする */
+}
+
+/* 追加テキスト（自動運転などの注釈） */
+.Shuttle-extra-text {
+  font-weight: normal; /* 通常の太さ */
+  margin-top: 3.0vh;
+  margin-left: 2.0vh;
+  font-size: 3.0vh;
+}
+.extra-text {
+  font-weight: normal; /* 通常の太さ */
+  margin-top: 2.0vh;
+  margin-left: 2.0vh;
+  font-size: 3.0vh;
+}
+
+/* 時刻表示エリア */
+.times {
+  display: inline-flex;
+  align-items: center; /* 子要素を垂直方向の中央に配置 */
+  gap: 0vh; /* 要素間のギャップ（垂直方向のビューポート単位） */
+  margin-top: 1.5vh; /* 上マージン（垂直方向のビューポート単位） */
+}
+
+/* 時刻のspan要素（個々の時刻） */
+.times span {
+  background-color: #0c538b; /* 背景色を水色に */
+  color: white; /* 文字色を濃い青に */
+  padding: 3vh 2vh; /* 内側の余白（垂直・水平方向のビューポート単位） */
+  border-radius: 5px; /* 角の丸み（垂直方向のビューポート単位） */
+  font-size: 8vh; /* フォントサイズ（垂直方向のビューポート単位） */
+  font-weight: bold; /* 太字 */
+  line-height: 0.7;
+  vertical-align: middle; /* 文字を垂直方向の中央に配置 */
+}
+
+.destination.extra-text, .destination.Shuttle-extra-text{
+  vertical-align: middle; /* マークを垂直方向の中央に配置 */
+}
+
+
+
+
+/* 東武バスのロゴ */
+.tobu-logo {
+  width: 8vh; /* 幅（垂直方向のビューポート単位） */
+  height: 6.0vh; /* 高さ（垂直方向のビューポート単位） */
+  margin-top:2vh; /* 上マージン（垂直方向のビューポート単位） */
+  margin-bottom: 0.5vh; /* 下マージン（垂直方向のビューポート単位） */
+  margin-right: 10px; /* アイコンとテキストの間にスペースを追加 */
+  margin-left: 10px;
+}
+
+.tobu-header {
+  margin-top: 20px; /* 東武バスのヘッダーに上マージンを追加 */
+}
+/* 東武バスの会社名 */
+.bus-company {
+  color: #ef5511; /* 文字色をオレンジに */
+  margin-top: 2vh; /* 上マージン（垂直方向のビューポート単位） */
+}
+
+
+/* 大学側の表示スタイル */
+.univ-side {
+  background-color: #FABE00; /* 背景色を黄色に */
+  color: #00325A; /* 文字色を濃い青に */
+  padding: 1.5vh 1.5vh 1.0vh 1.0vh; /* 内側の余白（垂直・水平方向） */
+  border-radius: 2.0vh; /* 角の丸み（垂直方向のビューポート単位） */
+  font-weight: bold; /* 太字 */
+  font-size: 2.5vh; /* フォントサイズ（垂直方向のビューポート単位） */
+}
+
+/* 公園側の表示スタイル */
+.park-side {
+  background-color: #02E30A; /* 背景色を緑に */
+  color: white; /* 文字色を白に */
+  padding: 1.5vh 1.5vh 1.0vh 1.0vh; /* 内側の余白（垂直・水平方向） */
+  border-radius: 2.0vh; /* 角の丸み（垂直方向のビューポート単位） */
+  font-size:2.5vh; /* フォントサイズ（垂直方向のビューポート単位） */
+}
+
+/* 水平線 */
+hr {
+  border: none; /* ボーダーをなくす */
+  border-top: 0.2vh solid white; /* 上ボーダーを白の実線で */
+  margin: 2.0vh 0; /* 上下のマージン（垂直方向のビューポート単位） */
+}
+
+/* ヘッダー内の水平線を非表示 */
+.header hr {
+  display: none; /* 非表示 */
+}
+
+/* ヘッダー内のバス情報エリアの幅調整 */
+.header > .bus-info {
+  width: calc(100% - 15vh); /* 幅を計算（全幅から固定値を引く） */
+}
+
+/* 現在時刻のコンテナ */
+#current-time {
+  display: inline-block; /* インラインブロック要素として表示 */
+  position: relative; /* 相対配置の基準点 */
+}
+
+/* 現在時刻のコロンの装飾 */
+#current-time::after {
+  content: ":"; /* コロンを表示 */
+  position: absolute; /* 絶対配置 */
+  left: 50%; /* 左端から50%の位置 */
+  transform: translateX(-50%); /* 要素の中央を基準に左へ移動 */
+  animation: blink 1s infinite; /* 点滅アニメーションを1秒間隔で無限に繰り返す */
+}
+
+/* 点滅アニメーションの定義 */
+@keyframes blink {
+  0% { opacity: 1; } /* 開始時は不透明 */
+  50% { opacity: 0; } /* 50%の時点で透明 */
+  100% { opacity: 1; } /* 終了時は不透明 */
+}
+
+.departure-time {
+  display: inline-block; /* 横に並べる */
+  margin-right: 1px; /* 時刻の右側に少しスペースを追加 */
+}
+
+.last-bus-mark {
+  font-size: 3vh;
+  padding:0;
+  display: inline-block; /* 横に並べる */
+  margin-left: 1px; /* 「終」マークの左側に少しスペースを追加 */
+  vertical-align: super; /* 上付き文字のように配置（必要に応じて調整） */
+}
+
+.autonomous-mark {
+  font-size: 3vh;
+  padding: 0vh;
+  color: #02E30A;
+  display: inline-block; /* 横に並べる */
+  margin-left: 1px; /* 自動運転マークの左側に少しスペースを追加 */
+  vertical-align: super; /* 上付き文字のように配置（必要に応じて調整） */
+}
+
+.end-bus {
+  font-size: 2vh;
+  padding: 0;
+  color: #00325A;
+}
+
+
+#bottom-ticker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0; /* 背景色 */
+  color: #333; /* 文字色 (初期色として設定) */
+  text-align: center; /* 中央揃え */
+  padding: 2vh 0; /* 上下のpadding */
+  font-size: 2.5vh; /* フォントサイズ */
+  display: block; /* デスクトップ表示では表示 */
+}
+
+@media (min-width: 601px) {
+  #language-switch {
+    display: none;
+  }
+  
+  #language-toggle-button {
+    display:none;
+  }
+}
+
+/* スマホ表示用のスタイル */
+@media (max-width: 600px) {
+
+
+  #language-switch {
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 100;
+  }
+  
+  #language-toggle-button {
+    padding: 5px 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  /* 現在時刻の表示と最下部のテキストを非表示 */
+  .time-box, #bottom-ticker {
+    display: none;
+  }
+  
+  .time-box, #current-time-box {
+    display: none;
+  }
+  
+  /* ヘッダーのレイアウト調整 */
+  .header {
+    flex-direction: column;
+    align-items: flex-start; /* 左寄せ */
+  }
+  .header > .bus-info {
+    width: 100%; /* 幅を計算（全幅から固定値を引く） */
+  }
+  .header-text {
+    font-size: 18px; /* フォントサイズ（垂直方向のビューポート単位） */
+    margin-bottom: 1vh; /* 下マージン（垂直方向のビューポート単位） */
+    display: flex; /* フレックスボックスレイアウト */
+    align-items: center; /* 要素を垂直方向に中央揃え */
+  }
+  /* バス情報のレイアウト調整 */
+  .bus-info {
+    width: 100%;
+    margin-bottom: 20px; /* バス情報の間隔 */
+  }
+
+  /* 柏駅行と江戸川台駅行の縦並び */
+  .container {
+    display: block;
+  }
+
+  /* 発車時刻の表示を2×2に */
+  .times {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2列 */
+    gap: 5px; /* 要素間の間隔 */
+    text-align:center;
+  }
+
+  /* 発車時刻の文字サイズ調整 */
+  .times span {
+    font-size: 24px; /* 文字サイズを小さく */
+    white-space: nowrap; /* 折り返し禁止 */
+    padding: 10px;
+  }
+
+  /* 文字サイズを小さく */
+  .destination, .univ-side, .park-side{
+    font-size: 14px;
+  }
+  .extra-text, .Shuttle-extra-text{
+    font-size: 14px;
+  }
+
+  /* アイコンサイズを小さく */
+  .bus-icon, .tobu-logo {
+    width: 30px; /* 幅を調整 */
+    height: auto; /* 高さを自動調整 */
+  }
+  .last-bus-mark {
+    font-size: 14px;
+    padding:0;
+    display: inline-block; /* 横に並べる */
+    margin-left: 1px; /* 「終」マークの左側に少しスペースを追加 */
+    vertical-align: middle; /* 上付き文字のように配置（必要に応じて調整） */
+  }
+
+  .autonomous-mark {
+    font-size: 14px;
+    padding: 0vh;
+    color: #02E30A;
+    display: inline-block; /* 横に並べる */
+    margin-left: 1px; /* 自動運転マークの左側に少しスペースを追加 */
+    vertical-align: middle; /* 上付き文字のように配置（必要に応じて調整） */
+  }
+}
+
+#bottom-ticker span {
+  opacity: 1; /* span 要素の初期透明度 */
+  transition: opacity 0.5s ease-in-out; /* 透明度の変化を滑らかにする */
+}
+
+#bottom-ticker span.fade-out {
+  opacity: 0; /* フェードアウト時の透明度 */
+}
+
+#bottom-ticker span.fade-in {
+  opacity: 1; /* フェードイン時の透明度 */
+}
+
