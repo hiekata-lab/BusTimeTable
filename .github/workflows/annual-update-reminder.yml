@@ -1,0 +1,47 @@
+name: Annual Update Reminder
+
+on:
+  schedule:
+    # 4/1 09:17 JST
+    - cron: "17 0 1 4 *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  create-reminder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create annual update issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          year="$(date -u +%Y)"
+          title="${year}年度バス時刻表更新"
+          body="$(cat <<'BODY'
+          ## 作業方針
+
+          年度初めに、担当者が `instructions/annual-timetable-update.md` に沿って時刻表を更新する。
+          更新作業は手動で Codex などの AI エージェントに依頼してよい。
+          `scraping.py` は fallback / cross-check としてのみ使う。
+
+          ## チェックリスト
+
+          - [ ] 東大シャトルバス公式ページと PDF を確認
+          - [ ] 東武バス「東大西」発の各方面時刻表を確認
+          - [ ] `public/data/` の CSV を更新
+          - [ ] `npm run typecheck`
+          - [ ] `npm run build`
+          - [ ] 必要に応じて `npm run scrape:check`
+          - [ ] 取得元、改定日、検証結果を PR に記載
+
+          ## 手順
+
+          `instructions/annual-timetable-update.md` を参照。
+          BODY
+          )"
+          gh issue create --title "$title" --body "$body"

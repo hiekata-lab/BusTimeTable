@@ -1,0 +1,89 @@
+name: Annual Timetable Update
+
+on:
+  schedule:
+    # 4/1 09:17 JST
+    - cron: "17 0 1 4 *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Codex annual update
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/annual-timetable-update.md
+          sandbox: danger-full-access
+          safety-strategy: drop-sudo
+          effort: high
+          output-file: codex-annual-update.md
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if [ -z "$(git status --porcelain -- ':!codex-annual-update.md')" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create update pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          year="$(date -u +%Y)"
+          branch="automation/annual-timetable-${year}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add . ':!codex-annual-update.md'
+          git commit -m "Update bus timetable for ${year}"
+          git push --force-with-lease origin "$branch"
+          pr_url="$(gh pr list --head "$branch" --json url --jq '.[0].url')"
+          if [ -n "$pr_url" ]; then
+            gh pr edit "$pr_url" \
+              --title "${year}年度バス時刻表更新" \
+              --body-file codex-annual-update.md
+          else
+            gh pr create \
+              --title "${year}年度バス時刻表更新" \
+              --body-file codex-annual-update.md \
+              --base main \
+              --head "$branch"
+          fi
