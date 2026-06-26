@@ -1,6 +1,6 @@
 /* 基本設定 */
 body {
-  font-family: sans-serif; /* フォントファミリー */
+  font-family: Helvetica, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif; /* 英数字は Helvetica、日本語は和文フォント */
   margin: 0; /* body のマージンをリセット */
   padding: 0vh; /* body のパディング（垂直方向のビューポート単位） */
   color: white; /* テキストの色を白に */
@@ -8,11 +8,10 @@ body {
   line-height: 0.8vh; /* 行の高さを調整（垂直方向のビューポート単位） */
 }
 
-/* 時刻の数字は html lang の切替でフォントが変わらないように固定する */
+/* 時刻の数字は桁幅を固定する */
 .time,
 .departure-time,
 .times span {
-  font-family: Arial, Helvetica, sans-serif;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -35,14 +34,37 @@ body {
 /* コンテナ（複数のバス情報をまとめる） */
 .container {
   display: flex; /* フレックスボックスレイアウト */
-  align-items: flex-start; /* 要素を上端で揃える */
+  align-items: stretch; /* 2 列を同じ高さに揃える */
   gap: 2.0vh; /* 要素間のギャップ（垂直方向のビューポート単位） */
+}
+
+/* コンテナ内の各列を縦並びにし、時刻ボックスを下端へ寄せて 2 列で縦位置を揃える */
+/* （江戸川台側だけ「門：…」の注記が 1 行入り、時刻ボックスがずれるのを吸収する） */
+.container > .bus-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.container > .bus-info .extra-text {
+  margin-bottom: 1.5vh; /* 注記と時刻ボックスの間隔を保持 */
+}
+
+.container > .bus-info .times {
+  margin-top: auto; /* 列を下端揃えにし、2 列の時刻ボックスを同じ高さに */
 }
 
 .destination-row {
   display: flex;
   align-items: center;
   gap: 1.0vh;
+  margin-top: 1.5vh; /* 行き先テキストのマージン分を行コンテナへ移動 */
+  margin-bottom: 0.5vh;
+}
+
+/* 行内では行き先テキストの上下マージンを打ち消し、チップと縦中央を揃える */
+.destination-row .destination {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 /* 現在時刻表示ボックス */
@@ -121,8 +143,9 @@ body {
 .times {
   display: inline-flex;
   align-items: center; /* 子要素を垂直方向の中央に配置 */
-  gap: 0vh; /* 要素間のギャップ（垂直方向のビューポート単位） */
+  gap: 1.5vh; /* 要素間のギャップ（垂直方向のビューポート単位） */
   margin-top: 1.5vh; /* 上マージン（垂直方向のビューポート単位） */
+  margin-left: 1.3vh; /* 全角「【」の左余白分だけ右へ寄せ、行き先テキストの左に揃える */
 }
 
 /* 時刻のspan要素（個々の時刻） */
@@ -130,7 +153,7 @@ body {
   background-color: #0c538b; /* 背景色を水色に */
   color: white; /* 文字色を濃い青に */
   padding: 3vh 2vh; /* 内側の余白（垂直・水平方向のビューポート単位） */
-  border-radius: 5px; /* 角の丸み（垂直方向のビューポート単位） */
+  border-radius: 2vh; /* 角の丸み（垂直方向のビューポート単位） */
   font-size: 8vh; /* フォントサイズ（垂直方向のビューポート単位） */
   font-weight: bold; /* 太字 */
   line-height: 0.7;
@@ -168,7 +191,7 @@ body {
 .univ-side {
   background-color: #FABE00; /* 背景色を黄色に */
   color: #00325A; /* 文字色を濃い青に */
-  padding: 1.5vh 1.5vh 1.0vh 1.0vh; /* 内側の余白（垂直・水平方向） */
+  padding: 1.5vh; /* 内側の余白（上下・左右を対称にして文字を中央へ） */
   border-radius: 2.0vh; /* 角の丸み（垂直方向のビューポート単位） */
   font-weight: bold; /* 太字 */
   font-size: 2.5vh; /* フォントサイズ（垂直方向のビューポート単位） */
@@ -176,9 +199,9 @@ body {
 
 /* 公園側の表示スタイル */
 .park-side {
-  background-color: #02E30A; /* 背景色を緑に */
+  background-color: #2E9E44; /* 背景色を落ち着いた緑に */
   color: white; /* 文字色を白に */
-  padding: 1.5vh 1.5vh 1.0vh 1.0vh; /* 内側の余白（垂直・水平方向） */
+  padding: 1.5vh; /* 内側の余白（上下・左右を対称にして文字を中央へ） */
   border-radius: 2.0vh; /* 角の丸み（垂直方向のビューポート単位） */
   font-size:2.5vh; /* フォントサイズ（垂直方向のビューポート単位） */
 }
@@ -222,7 +245,7 @@ hr {
 .autonomous-mark {
   font-size: 3vh;
   padding: 0vh;
-  color: #02E30A;
+  color: #2E9E44;
   display: inline-block; /* 横に並べる */
   margin-left: 1px; /* 自動運転マークの左側に少しスペースを追加 */
   vertical-align: super; /* 上付き文字のように配置（必要に応じて調整） */
@@ -352,7 +375,7 @@ hr {
   .autonomous-mark {
     font-size: 14px;
     padding: 0vh;
-    color: #02E30A;
+    color: #2E9E44;
     display: inline-block; /* 横に並べる */
     margin-left: 1px; /* 自動運転マークの左側に少しスペースを追加 */
     vertical-align: middle; /* 上付き文字のように配置（必要に応じて調整） */
