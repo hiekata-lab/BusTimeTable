@@ -173,7 +173,7 @@ function findNextDepartures(currentTime: string, departureTimes: Departure[], co
     .filter((departure) => toMinutes(departure.time) > nowInMinutes)
     .slice(0, count);
 
-  const lastDeparture = departureTimes.at(-1);
+  const lastDeparture = departureTimes[departureTimes.length - 1];
 
   return nextDepartures.map((departure) => ({
     ...departure,
