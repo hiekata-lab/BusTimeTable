@@ -58,10 +58,10 @@ jobs:
             --jq '.[] | select(.state == "open") | .number')"
 
           for pr in $prs; do
-            author="$(gh pr view "$pr" --json author --jq '.author.login')"
-            has_label="$(gh pr view "$pr" --json labels --jq '.labels[].name' | grep -cx 'automerge-safe' || true)"
+            author="$(gh pr view "$pr" --repo "$REPO" --json author --jq '.author.login')"
+            has_label="$(gh pr view "$pr" --repo "$REPO" --json labels --jq '.labels[].name' | grep -cx 'automerge-safe' || true)"
 
             if [ "$author" = "dependabot[bot]" ] && [ "$has_label" -gt 0 ]; then
-              gh pr merge "$pr" --squash --delete-branch
+              gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
             fi
           done
