@@ -1,0 +1,67 @@
+name: Dependabot Auto Merge
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  label-safe-update:
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Label patch and minor updates
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh label create automerge-safe \
+            --color 0E8A16 \
+            --description "Dependabot patch/minor update eligible for auto merge" \
+          || true
+          gh pr edit "$PR_URL" --add-label automerge-safe
+
+  merge-after-ci:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Merge safe Dependabot PR after CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          prs="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${REPO}/commits/${HEAD_SHA}/pulls" \
+            --jq '.[] | select(.state == "open") | .number')"
+
+          for pr in $prs; do
+            author="$(gh pr view "$pr" --repo "$REPO" --json author --jq '.author.login')"
+            has_label="$(gh pr view "$pr" --repo "$REPO" --json labels --jq '.labels[].name' | grep -cx 'automerge-safe' || true)"
+
+            if [ "$author" = "dependabot[bot]" ] && [ "$has_label" -gt 0 ]; then
+              gh pr merge "$pr" --repo "$REPO" --squash --delete-branch
+            fi
+          done
