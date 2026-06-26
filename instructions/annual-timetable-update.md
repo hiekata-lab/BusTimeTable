@@ -1,6 +1,6 @@
 # 年度頭の時刻表更新手順
 
-この手順は 4 月の時刻表改定確認を AI エージェントに依頼する前提で使う。標準手順は「AI エージェントが公式情報を探し、根拠を確認して CSV を更新する」。`scraping.py` は fallback / cross-check として残す。
+この手順は 4 月の時刻表改定確認を AI エージェントに依頼する前提で使う。標準手順は「AI エージェントが公式情報を探し、ソースを確認して CSV を更新する」。`scraping.py` は fallback / cross-check 用に残す。
 
 ## 1. 前提確認
 
@@ -10,16 +10,15 @@
 
 ## 2. 情報収集
 
-AI エージェントは、日英両方で次の情報を探す。
+AI エージェントは、ウェブ検索のツールを用い、次の情報を探す。
 
 - 東大シャトルバス公式ページ
 - 東大シャトルバス公式 PDF
 - 東武バス「東大西」発の各方面時刻表
-- 内閣府の国民の祝日・休日 CSV
 - 改定日、運休日、自動運転バス運行状況
 - 運賃や所要時間など、画面文言に影響する情報
 
-情報源は公式を優先する。公式から機械可読な時刻表が取れない場合は、駅探などの時刻表サービスを補助情報として使う（駅探, n.d.）。断定的な資料文面を書く場合は APA 形式で文中引用を入れる。
+情報源は公式を優先する。公式から機械可読な時刻表が取れない場合は、駅探などの時刻表サービスを補助情報として使う。
 
 ## 3. 東武バス CSV 更新
 
@@ -60,7 +59,7 @@ npm run scrape:check
 
 ## 4. 東大シャトルバス CSV 更新
 
-新領域創成科学研究科の公式「シャトルバス時刻表」ページと PDF を確認する。2026 年度版では、2026 年 4 月 1 日改定の PDF が公式時刻表として掲出されている（東京大学大学院新領域創成科学研究科, 2026）。
+新領域創成科学研究科の公式「シャトルバス時刻表」ページと PDF を確認する。例えば 2026 年度版では、2026 年 4 月 1 日改定の PDF が公式時刻表として掲出されている。
 
 更新対象:
 
@@ -72,17 +71,11 @@ npm run scrape:check
 
 - 平日表は「東京大学 柏キャンパス発 柏の葉キャンパス駅西口」側だけを入力
 - 土日・祝日運休なら Saturday/Sunday は空
-- 公式 PDF に「自動運転バスは運休中」とある場合、`※` 付き自動運転便は表示対象から除外
 - 各行は `HH:MM,0` または `HH:MM,1`
 
 ## 5. 表示と build 検証
 
-祝日データは内閣府の `syukujitsu.csv` を UTF-8 に変換して `public/data/japanese-holidays.csv` に保存する（内閣府, n.d.）。祝日は休日ダイヤとして扱う。
-
-```bash
-curl -L -o /tmp/syukujitsu.csv https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv
-iconv -f CP932 -t UTF-8 /tmp/syukujitsu.csv > public/data/japanese-holidays.csv
-```
+祝日はパッケージ `date-holidays` が legacy になっていない限り、これを使って判定し、休日ダイヤとして扱う。
 
 ```bash
 npm run typecheck
@@ -105,15 +98,6 @@ PR には次を記載する:
 - 更新年度
 - 東武バス取得元と確認方法
 - 東大シャトルバス PDF の更新日
-- 祝日 CSV の取得元と取得日
 - 実行した検証コマンド
 - `scraping.py` を使った場合は、fallback / cross-check として使ったこと
 - 既存公開先から研究室 repo Pages へ移行するかどうか
-
-## References
-
-駅探. (n.d.). 東武バス「東大西」路線バス時刻表. Retrieved June 26, 2026, from https://ekitan.com/timetable/route-bus/company/5083/1015573/1003068/d1
-
-内閣府. (n.d.). 国民の祝日について. Retrieved June 26, 2026, from https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html
-
-東京大学大学院新領域創成科学研究科. (2026). シャトルバス時刻表. Retrieved June 26, 2026, from https://www.k.u-tokyo.ac.jp/gsfs/access/timetable/

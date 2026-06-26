@@ -12,6 +12,11 @@ from typing import Iterable
 import requests
 from bs4 import BeautifulSoup
 
+"""
+保守性が悪く、うまくスクレイピングできない可能性があるので、基本的にはこのスクリプトを使わず、AIエージェントに依頼することを検討してください。
+This script has poor maintainability and may not be able to scrape data effectively. Please consider asking an AI agent to handle the task instead of using this script.
+"""
+
 
 DEFAULT_OUTPUT_DIR = Path("public/data")
 TIME_PATTERN = re.compile(r"\b([0-2]?\d:[0-5]\d)\b")

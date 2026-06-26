@@ -1,4 +1,5 @@
 import './styles.css';
+import Holidays from 'date-holidays';
 
 type Language = 'ja' | 'en';
 type DayType = 'Weekday' | 'Saturday' | 'Sunday';
@@ -64,7 +65,6 @@ const textTranslations = new Map<string, string>([
 const tickerMessages = [
   '東大西門前経由は、ヨークマート前経由に対して駅到着までの所要時間が7分長いです',
   '《各駅までの所要時間》　シャトルバス：8分 柏の葉キャンパス駅：10～14分 柏駅：25分 江戸川台駅：15～22分',
-  '制作：田中柊平（2025年3月稗方研卒業） shuhei.ged@gmail.com',
   '忘れ物はありませんか？　特に傘とか、、、',
   '研究お疲れ様です。',
   '夜は学生証がないと棟内に戻れないのでお気をつけ下さい。',
@@ -76,7 +76,6 @@ const tickerMessages = [
   '祝日は休日ダイヤで表示します。',
   'The route via Todai Nishimon-mae takes 7 minutes longer to reach the station than the route via York Mart.',
   'Travel time: Shuttle bus 8min / Kashiwanoha-Campus Sta. 10-14min / Kashiwa Sta. 25min / Edogawadai Sta. 15-22min',
-  'Made by Shuhei Tanaka (Hiekata Lab graduate in March 2025) shuhei.ged@gmail.com',
   'Did you leave anything behind? Especially umbrellas...',
   'Thank you for your hard work on your research.',
   'Please note that you cannot return to this building from 18:00 without your student ID card.',
@@ -91,6 +90,10 @@ const translatableTextSelector = '.translatable-text';
 const tickerElementId = 'bottom-ticker';
 const fadeDurationMs = 500;
 const smartphoneWidthPx = 600;
+const japaneseHolidays = new Holidays('JP', {
+  timezone: 'Asia/Tokyo',
+  types: ['public'],
+});
 
 const firstLanguageParam = new URL(window.location.href).searchParams.get('FL');
 let currentLanguage: Language = firstLanguageParam === '0' ? 'en' : 'ja';
@@ -98,79 +101,23 @@ let wasSmartphoneMode = isSmartphoneMode();
 let previousMinute = -1;
 let colonVisible = true;
 let currentMessageIndex = Math.floor(Math.random() * tickerMessages.length);
-let holidayDatesPromise: Promise<Set<string>> | undefined;
 
 function isSmartphoneMode(): boolean {
   return window.innerWidth <= smartphoneWidthPx;
 }
 
-function getLocalDateKey(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
+function getDateOnly(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-function normalizeHolidayDate(rawDate: string): string | undefined {
-  const [year, month, day] = rawDate.split('/').map(Number);
-
-  if (!year || !month || !day) {
-    return;
-  }
-
-  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+function isJapaneseHoliday(date: Date): boolean {
+  return Boolean(japaneseHolidays.isHoliday(getDateOnly(date)));
 }
 
-function parseHolidayCsv(csvData: string): Set<string> {
-  const holidayDates = new Set<string>();
-
-  csvData
-    .replace(/^\uFEFF/, '')
-    .split(/\r?\n/)
-    .slice(1)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .forEach((line) => {
-      const [rawDate] = line.split(',');
-      const dateKey = normalizeHolidayDate(rawDate);
-
-      if (dateKey) {
-        holidayDates.add(dateKey);
-      }
-    });
-
-  return holidayDates;
-}
-
-async function loadHolidayDates(): Promise<Set<string>> {
-  if (!holidayDatesPromise) {
-    holidayDatesPromise = fetch(`${import.meta.env.BASE_URL}data/japanese-holidays.csv`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch Japanese holidays: ${response.status}`);
-        }
-
-        return response.text();
-      })
-      .then(parseHolidayCsv)
-      .catch((error) => {
-        console.error('祝日データの読み込みに失敗しました:', error);
-        return new Set<string>();
-      });
-  }
-
-  return holidayDatesPromise;
-}
-
-async function isJapaneseHoliday(date: Date): Promise<boolean> {
-  return (await loadHolidayDates()).has(getLocalDateKey(date));
-}
-
-async function getDayType(date: Date): Promise<DayType> {
+function getDayType(date: Date): DayType {
   const dayOfWeek = date.getDay();
 
-  if (await isJapaneseHoliday(date)) {
+  if (isJapaneseHoliday(date)) {
     return 'Sunday';
   }
 
@@ -190,8 +137,8 @@ function toMinutes(time: string): number {
   return hour * 60 + minute;
 }
 
-async function getDataUrl(baseFileName: string, date = new Date()): Promise<string> {
-  return `${import.meta.env.BASE_URL}data/${baseFileName}${await getDayType(date)}.csv`;
+function getDataUrl(baseFileName: string, date = new Date()): string {
+  return `${import.meta.env.BASE_URL}data/${baseFileName}${getDayType(date)}.csv`;
 }
 
 function parseDepartureCsv(csvData: string): Departure[] {
@@ -210,7 +157,7 @@ function parseDepartureCsv(csvData: string): Departure[] {
 }
 
 async function loadDepartureTimes(baseFileName: string): Promise<Departure[]> {
-  const csvUrl = await getDataUrl(baseFileName);
+  const csvUrl = getDataUrl(baseFileName);
   const response = await fetch(csvUrl);
 
   if (!response.ok) {
