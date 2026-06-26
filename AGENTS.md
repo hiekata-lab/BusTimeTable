@@ -47,3 +47,10 @@ npm run scrape:check
 - GitHub Pages は GitHub Actions から `dist/` を公開
 - `vite.config.ts` の build base は相対パス
 - deploy 先を root domain と project path の間で変更しても、assets と CSV は同じ相対位置で解決される
+
+## 年度更新
+
+- GitHub issue は作らない
+- `.github/workflows/annual-timetable-update.yml` が毎年 4 月 1 日に Codex を実行して更新 PR を作る
+- 研究室 org/repo に repository secret `OPENAI_API_KEY` が必要
+- 更新 PR が merge されると deploy workflow が走り、GitHub Pages が更新される

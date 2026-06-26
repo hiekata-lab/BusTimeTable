@@ -1,6 +1,6 @@
 # 年度頭の時刻表更新手順
 
-この手順は 4 月の時刻表改定確認を AI エージェントに依頼する前提で使う。標準手順は「AI エージェントが公式情報を探し、根拠を確認して CSV を更新する」。`scraping.py` は fallback / cross-check として残す。
+この手順は 4 月の時刻表改定確認を AI エージェントに依頼する前提で使う。標準手順は「AI エージェントが公式情報を探し、根拠を確認して CSV を更新する」。`scraping.py` は fallback / cross-check として残す。研究室 org では GitHub Actions の `Annual Timetable Update` がこの手順で更新 PR を作る。
 
 ## 1. 前提確認
 

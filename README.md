@@ -26,6 +26,8 @@ npm run build
 
 標準手順は、AI エージェントが公式ページ・PDF・時刻表ページを探し、根拠を確認したうえで `public/data/` の CSV を更新する。東武バスについては、公式サイトまたは時刻表サービスで「東大西」発の各方面時刻表を確認し、柏の葉キャンパス駅西口・柏駅西口・江戸川台駅東口方面の最終 CSV に反映する（駅探, n.d.）。
 
+研究室 org で運用する場合は、GitHub Actions の `Annual Timetable Update` が毎年 4 月 1 日に Codex を実行し、更新 PR を作成する。利用には repository secret `OPENAI_API_KEY` が必要。
+
 `scraping.py` は、駅探 HTML が従来構造のまま残っている場合に限って使う fallback / cross-check とする。使う場合の補助コマンドは次のとおり。
 
 ```bash
