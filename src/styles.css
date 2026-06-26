@@ -8,6 +8,15 @@ body {
   line-height: 0.8vh; /* 行の高さを調整（垂直方向のビューポート単位） */
 }
 
+/* 時刻の数字は html lang の切替でフォントが変わらないように固定する */
+.time,
+.departure-time,
+.times span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
 /* ヘッダー部分 */
 .header {
   justify-content: space-between; /* 要素を左右に配置し、間隔を最大化 */
