@@ -13,8 +13,8 @@
     "scrape:check": "python3 scraping.py --check"
   },
   "devDependencies": {
-    "typescript": "^6.0.3",
-    "vite": "^8.1.0"
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4"
   },
   "dependencies": {
     "date-holidays": "^3.32.0"
