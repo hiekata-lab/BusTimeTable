@@ -17,6 +17,6 @@
     "vite": "^8.1.4"
   },
   "dependencies": {
-    "date-holidays": "^3.32.0"
+    "date-holidays": "^3.35.0"
   }
 }
