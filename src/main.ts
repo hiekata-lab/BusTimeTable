@@ -3,7 +3,7 @@ import Holidays from 'date-holidays';
 
 type Language = 'ja' | 'en';
 type DayType = 'Weekday' | 'Saturday' | 'Sunday';
-type RouteMarker = '自' | '公' | '門';
+type RouteMarker = '公' | '門';
 
 interface Departure {
   time: string;
@@ -26,7 +26,6 @@ const routes: RouteConfig[] = [
     baseFileName: 'Shuttlebus',
     elementId: 'todai-next-departures',
     maxDepartures: 4,
-    marker: '自',
   },
   {
     baseFileName: 'ToKashiwanoha',
@@ -52,7 +51,6 @@ const textTranslations = new Map<string, string>([
   ['東大シャトルバス', 'UTokyo Shuttle Bus'],
   ['東武バス', 'Tobu Bus'],
   ['【環境棟前 → 柏の葉キャンパス駅西口】', '【Kankyo-to Mae -> Kashiwanoha-Campus Sta.】'],
-  ['※自動運転バスは運休中です', 'Autonomous shuttle service is suspended.'],
   ['【東大西 → 柏の葉キャンパス駅西口】', '【To Kashiwanoha Campus Sta.】'],
   ['【東大西 → 柏駅西口】', '【To Kashiwa Sta.】'],
   ['【東大西 → 江戸川台駅東口】', '【To Edogawadai Sta.】'],
