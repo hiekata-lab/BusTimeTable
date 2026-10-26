@@ -16,6 +16,10 @@ This is intended for use on a display terminal in a research lab. When the page 
 
 Please update the CSV files in `public/data` at the beginning of each fiscal year. Note that a reminder issue is set to be automatically created in this repository every year on April 1st.
 
+改正前にPRを用意する場合は、本文末尾に `/schedule 2027-04-01` のように日付を記載すると、その日の0時（JST）以降にCIの成功を確認して自動マージ・公開します。時刻やタイムゾーンの入力は不要です。予約の変更や取り消しは[時刻表更新手順](instructions/annual-timetable-update.md#7-改正日に合わせてマージを予約する)を参照してください。
+
+To prepare an update before its effective date, add a date such as `/schedule 2027-04-01` at the end of the PR description. The date is interpreted as midnight in Japan Standard Time; no time or timezone is needed. After that time, the scheduled workflow merges and deploys the PR once CI passes. See the [timetable update instructions](instructions/annual-timetable-update.md#7-改正日に合わせてマージを予約する) for changes and cancellations.
+
 更新には Codex や Claude Code などの AI エージェントを使うことを想定しています。依頼するときは、次のように伝えれば十分です。
 
 The plan is to use AI agents such as Codex or Claude Code for updates. When making a request, it is sufficient to say the following.

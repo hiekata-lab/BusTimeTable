@@ -1,0 +1,64 @@
+name: Merge Schedule
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+  schedule:
+    # 毎時2分から5分おきに、期限を迎えた予約を確認する。
+    - cron: "2-57/5 * * * *"
+      timezone: Asia/Tokyo
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const { validate } = require('./.github/scripts/merge-schedule.cjs');
+            validate({ context, core });
+
+  merge-schedule:
+    if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    concurrency:
+      group: merge-schedule
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+      checks: read
+      statuses: read
+    outputs:
+      deploy-ref: ${{ steps.merge.outputs.deploy-ref }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/github-script@v8
+        id: merge
+        with:
+          script: |
+            const { mergeScheduledPullRequests } = require('./.github/scripts/merge-schedule.cjs');
+            await mergeScheduledPullRequests({ github, context, core });
+
+  deploy:
+    # 一部のPRでマージに失敗しても、マージ済みの変更は公開する。
+    if: always() && needs.merge-schedule.outputs.deploy-ref != ''
+    needs: merge-schedule
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ needs.merge-schedule.outputs.deploy-ref }}
