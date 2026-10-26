@@ -36,9 +36,10 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
           gh label create automerge-safe \
+            --repo "$GITHUB_REPOSITORY" \
             --color 0E8A16 \
             --description "Dependabot patch/minor update eligible for auto merge" \
-          || true
+            --force
           gh pr edit "$PR_URL" --add-label automerge-safe
 
   merge-after-ci:
